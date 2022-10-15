@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.mail.Address;
+import javax.mail.Flags;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -16,6 +17,7 @@ import javax.mail.Part;
 import javax.mail.Session;
 import javax.mail.Store;
 import javax.mail.internet.MimeBodyPart;
+import javax.mail.search.FlagTerm;
 
 public class DownloadEmailAttachments {
     private String downloadDirectory;
@@ -38,8 +40,20 @@ public class DownloadEmailAttachments {
         Properties properties = mailServerProperties.apply(host, port);
         Store store = setSessionStoreProperties(userName, password, properties);
         Folder inbox = store.getFolder("INBOX");
-        inbox.open(Folder.READ_ONLY);
-        Message[] arrayMessages = inbox.getMessages();
+
+        Message[] arrayMessages;
+
+        if ("imap".equals(properties.getProperty("protocol"))) {
+            inbox.open(Folder.READ_WRITE);
+
+            FlagTerm ft = new FlagTerm(new Flags(Flags.Flag.SEEN), false);
+            arrayMessages = inbox.search(ft);
+        } else {
+            inbox.open(Folder.READ_ONLY);
+
+            arrayMessages = inbox.getMessages();
+        }
+
         for (int i = 0; i < arrayMessages.length; i++) {
             Message message = arrayMessages[i];
             Address[] fromAddress = message.getFrom();
@@ -56,6 +70,11 @@ public class DownloadEmailAttachments {
             System.out.println(" Subject: " + subject);
             System.out.println(" Sent Date: " + sentDate);
             System.out.println(" Attachments: " + attachments);
+
+            if ("imap".equals(properties.getProperty("protocol"))) {
+                inbox.setFlags(new Message[] { message }, new Flags(Flags.Flag.SEEN), true);
+            }
+
         }
         inbox.close(false);
         store.close();
