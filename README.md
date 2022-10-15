@@ -24,15 +24,15 @@ password=password
 
 #### Run slim build version
 
-`java -cp "target/mail-attachment-poll-1.0-SNAPSHOT.jar:lib/*" dev.heinzl.mailattachmentpoll.App`
+`java -cp "target/mail-attachment-poll-1.0.0.jar:lib/*" dev.heinzl.mailattachmentpoll.ImapExample`
 
 #### Run fat build version
 
-`java -jar mail-attachment-poll-1.0-SNAPSHOT-jar-with-dependencies.jar`
+`java -jar mail-attachment-poll-1.0.0-jar-with-dependencies.jar`
 
 ### Mirth
 
-- Copy `lib/javax.mail-1.6.2.jar` and `target/mail-attachment-poll-1.0-SNAPSHOT.jar` into `custom-lib` folder
+- Copy `lib/javax.mail-1.6.2.jar` and `target/mail-attachment-poll-1.0.0.jar` into `custom-lib` folder
 - Access with `var receiver = new Packages.dev.heinzl.mailattachmentpoll.DownloadEmailAttachments();`
 - IMAP:
 
@@ -58,9 +58,3 @@ password=password
 ## Things to consider
 
 - POP3 deletes mail from server after reading, but in gmail UI they are still visible - probably because it represents the IMAP behaviour
-
-# TODO
-
-- test in mirth
-- export example mirth channel with periodic javascript
-- test if javax.mail not already in mirth available
