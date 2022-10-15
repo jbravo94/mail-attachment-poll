@@ -2,6 +2,7 @@ package dev.heinzl.mailattachmentpoll;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -88,7 +89,8 @@ public class DownloadEmailAttachments {
             MimeBodyPart part = (MimeBodyPart) multiPart.getBodyPart(partCount);
             if (Part.ATTACHMENT.equalsIgnoreCase(part.getDisposition())) {
                 String file = part.getFileName();
-                part.saveFile(downloadDirectory + File.separator + part.getFileName());
+                String fileName = Instant.now().getEpochSecond() + "_" + file;
+                part.saveFile(downloadDirectory + File.separator + fileName);
                 downloadedAttachments.add(file);
             }
         }
