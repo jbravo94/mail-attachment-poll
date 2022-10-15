@@ -9,8 +9,7 @@
   <version>1.0.1-SNAPSHOT</version>
 
   <name>mail-attachment-poll</name>
-  <!-- FIXME change it to the project's website -->
-  <url>http://www.example.com</url>
+  <url>https://heinzl.dev</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -83,7 +82,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>dev.heinzl.mailattachmentpoll.App</mainClass>
+              <mainClass>dev.heinzl.mailattachmentpoll.ImapExample</mainClass>
             </manifest>
           </archive>
           <descriptorRefs>
