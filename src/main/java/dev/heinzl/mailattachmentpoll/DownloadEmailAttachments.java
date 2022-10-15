@@ -19,14 +19,23 @@ import javax.mail.internet.MimeBodyPart;
 
 public class DownloadEmailAttachments {
     private String downloadDirectory;
+    private MailServerPropertiesFunction<String, String, Properties> mailServerProperties;
 
     public void setSaveDirectory(String dir) {
         this.downloadDirectory = dir;
     }
 
+    public void setPop3MailServerProperties() {
+        this.mailServerProperties = (host, port) -> getPop3MailServerProperties(host, port);
+    }
+
+    public void setImapMailServerProperties() {
+        this.mailServerProperties = (host, port) -> getImapMailServerProperties(host, port);
+    }
+
     public void downloadEmailAttachments(String host, String port, String userName, String password)
             throws NoSuchProviderException, MessagingException, IOException {
-        Properties properties = setMailServerProperties(host, port);
+        Properties properties = mailServerProperties.apply(host, port);
         Store store = setSessionStoreProperties(userName, password, properties);
         Folder inbox = store.getFolder("INBOX");
         inbox.open(Folder.READ_ONLY);
@@ -68,16 +77,16 @@ public class DownloadEmailAttachments {
         return downloadedAttachments;
     }
 
-    public Store setSessionStoreProperties(String userName, String password, Properties properties)
+    private Store setSessionStoreProperties(String userName, String password, Properties properties)
             throws NoSuchProviderException, MessagingException {
         Session session = Session.getDefaultInstance(properties);
 
-        Store store = session.getStore("pop3");
+        Store store = session.getStore(properties.getProperty("protocol"));
         store.connect(userName, password);
         return store;
     }
 
-    public Properties setMailServerProperties(String host, String port) {
+    private Properties getPop3MailServerProperties(String host, String port) {
         Properties properties = new Properties();
 
         properties.put("mail.pop3.host", host);
@@ -86,6 +95,25 @@ public class DownloadEmailAttachments {
         properties.setProperty("mail.pop3.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         properties.setProperty("mail.pop3.socketFactory.fallback", "false");
         properties.setProperty("mail.pop3.socketFactory.port", String.valueOf(port));
+
+        properties.setProperty("protocol", "pop3");
+
+        return properties;
+    }
+
+    private Properties getImapMailServerProperties(String host, String port) {
+        Properties properties = new Properties();
+
+        properties.put("mail.imap.host", host);
+        properties.put("mail.imap.port", port);
+
+        properties.setProperty("mail.imap.ssl.enable", "true");
+        properties.setProperty("mail.imap.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        properties.setProperty("mail.imap.socketFactory.fallback", "false");
+        properties.setProperty("mail.imap.socketFactory.port", String.valueOf(port));
+
+        properties.setProperty("protocol", "imap");
+
         return properties;
     }
 }
