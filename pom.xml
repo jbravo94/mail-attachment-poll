@@ -6,7 +6,7 @@
 
   <groupId>dev.heinzl.mailattachmentpoll</groupId>
   <artifactId>mail-attachment-poll</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
 
   <name>mail-attachment-poll</name>
   <!-- FIXME change it to the project's website -->
